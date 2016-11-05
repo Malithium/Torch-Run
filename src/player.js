@@ -3,9 +3,12 @@
  */
 var sprite_pl = 'player_spr';
 
+var player_x = GAMEWIDTH/2;
+var player_y = GAMEHEIGHT/2;
+
 function getPlayerSprite()
 {
-    return game.add.sprite(GAMEWIDTH/2, GAMEHEIGHT/2, sprite_pl);
+    return game.add.sprite(player_x, player_y, sprite_pl);
 }
 
 function setPlayerSprite(spritePath)
@@ -29,8 +32,8 @@ function playerUpdate(player) {
 }
 
 function enemyCollision(){
-    player.x = GAMEWIDTH/2;
-    player.y = GAMEHEIGHT/2;
+    player.x = player_x;
+    player.y = player_y;
 }
 
 function fuelCollision(){
