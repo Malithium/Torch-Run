@@ -5,7 +5,7 @@ var sprite_en = 'enemy_spr';
 
 function getEnemySprite()
 {
-    return game.add.sprite(GAMEWIDTH/2, GAMEHEIGHT - 50, sprite_en);
+    return game.add.sprite(GAMEWIDTH - 50, GAMEHEIGHT/2, sprite_en);
 }
 
 function setEnemySprite(spritePath)
