@@ -1,8 +1,8 @@
 /**
  * Created by Kyle Tuckey on 02/11/2016.
  */
-var GAMEWIDTH = 600;
-var GAMEHEIGHT = 600;
+var GAMEWIDTH = 640;
+var GAMEHEIGHT = 640;
 var player;
 var wall;
 var enemy;
