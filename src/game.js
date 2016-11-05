@@ -33,7 +33,7 @@ function create(){
     game.physics.enable(enemy, Phaser.Physics.ARCADE);
     game.physics.enable(fuel, Phaser.Physics.ARCADE);
     wall.body.immovable = true;
-    initPlayerMovement();
+    cursors = game.input.keyboard.createCursorKeys();
 }
 
 function update(){
