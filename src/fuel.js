@@ -3,9 +3,15 @@
  */
 var sprite_fl = 'fuel_spr';
 
-function getFuelSprite()
+function getFuelSprite(f_x, f_y)
 {
-    return game.add.sprite(GAMEWIDTH - 80, GAMEHEIGHT - 60, sprite_fl);
+    var fuel = game.add.sprite(f_x, f_y, sprite_fl);
+
+    fuel.anchor.setTo(0, 0);
+
+    game.physics.enable(fuel, Phaser.Physics.ARCADE);
+
+    return fuel;
 }
 
 function setFuelSprite(spritePath)

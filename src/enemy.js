@@ -3,9 +3,12 @@
  */
 var sprite_en = 'enemy_spr';
 
-function getEnemySprite()
+function getEnemySprite(e_x, e_y)
 {
-    return game.add.sprite(GAMEWIDTH - 50, GAMEHEIGHT/2, sprite_en);
+    enemy = game.add.sprite(e_x, e_y, sprite_en);
+    enemy.anchor.setTo(0, 0);
+
+    game.physics.enable(enemy, Phaser.Physics.ARCADE);
 }
 
 function setEnemySprite(spritePath)

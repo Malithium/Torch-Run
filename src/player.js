@@ -2,13 +2,17 @@
  * Created by Kyle Tuckey on 02/11/2016.
  */
 var sprite_pl = 'player_spr';
+var player_x;
+var player_y;
 
-var player_x = GAMEWIDTH/2;
-var player_y = GAMEHEIGHT/2;
 
-function getPlayerSprite()
+function getPlayerSprite(p_x, p_y)
 {
-    return game.add.sprite(player_x, player_y, sprite_pl);
+    player = game.add.sprite(p_x, p_y, sprite_pl);
+    player.anchor.setTo(0, 0);
+    player_x = p_x;
+    player_y = p_y;
+    game.physics.enable(player, Phaser.Physics.ARCADE);
 }
 
 function setPlayerSprite(spritePath)
@@ -36,7 +40,10 @@ function enemyCollision(){
     player.y = player_y;
 }
 
-function fuelCollision(){
+function fuelCollision(player, fuel){
     fuel.kill();
 }
 
+function doorCollision(player, door){
+    nextLevel();
+}

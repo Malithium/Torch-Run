@@ -3,9 +3,13 @@
  */
 var sprite_wl = 'wall_spr';
 
-function getWallSprite()
+function getWallSprite(w_x, w_y)
 {
-    return game.add.sprite(GAMEWIDTH/2, GAMEHEIGHT - 50, sprite_wl);
+    var wall = game.add.sprite(w_x, w_y, sprite_wl);
+    wall.anchor.setTo(0, 0);
+    game.physics.enable(wall, Phaser.Physics.ARCADE);
+    wall.body.immovable = true;
+    return wall;
 }
 
 function setWallSprite(spritePath)
