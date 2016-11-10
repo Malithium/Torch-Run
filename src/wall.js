@@ -1,18 +1,17 @@
 /**
  * Created by Kyle Tuckey on 05/11/2016.
  */
-var sprite_wl = 'wall_spr';
-
-function getWallSprite(w_x, w_y)
+function getWallSprite(w_x, w_y, state)
 {
-    var wall = game.add.sprite(w_x, w_y, sprite_wl);
+    if(state == 0)
+        var wall = game.add.sprite(w_x, w_y, 'wall_spr');
+    else
+        var wall = game.add.sprite(w_x, w_y, 'gate_spr');
+
     wall.anchor.setTo(0, 0);
     game.physics.enable(wall, Phaser.Physics.ARCADE);
     wall.body.immovable = true;
-    return wall;
-}
+    wall.wallState = state;
 
-function setWallSprite(spritePath)
-{
-    return game.load.image(sprite_wl, spritePath);
+    return wall;
 }

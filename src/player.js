@@ -41,9 +41,20 @@ function enemyCollision(){
 }
 
 function fuelCollision(player, fuel){
+    torchPower += 30;
     fuel.kill();
 }
 
 function doorCollision(player, door){
     nextLevel();
+}
+
+function leverCollision(player, lever){
+    for(var set in walls.children){
+        if(walls.children[set].wallState > 0)
+        {
+            walls.children[set].kill();
+        }
+    }
+
 }
