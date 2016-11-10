@@ -47,9 +47,6 @@ function update(){
     bitmap.context.fillStyle = 'rgb(50, 50, 50)';
     bitmap.context.fillRect(0, 0, GAMEWIDTH, GAMEHEIGHT);
 
-    // Ray casting!
-    // Cast rays at intervals in a large circle around the light.
-    // Save all of the intersection points or ray end points if there was no intersection.
     var points = [];
     for(var a = 0; a < Math.PI * 2; a += Math.PI/360) {
         // Create a ray from the light to a point on the circle
@@ -67,10 +64,6 @@ function update(){
         }
     }
 
-    // Connect the dots and fill in the shape, which are cones of light,
-    // with a bright white color. When multiplied with the background,
-    // the white color will allow the full color of the background to
-    // shine through.
     bitmap.context.beginPath();
     bitmap.context.fillStyle = 'rgb(255, 255, 255)';
     bitmap.context.moveTo(points[0].x, points[0].y);
@@ -126,8 +119,7 @@ function nextLevel(){
 function getWallIntersection(ray){
     var distanceToWall = Number.POSITIVE_INFINITY;
     var closestIntersection = null;
-
-    // For each of the walls...
+    
     walls.forEach(function(wall) {
         // Create an array of lines that represent the four edges of each wall
         var lines = [
@@ -139,8 +131,6 @@ function getWallIntersection(ray){
                 wall.x + wall.width, wall.y + wall.height)
         ];
 
-        // Test each of the edges in this wall against the ray.
-        // If the ray intersects any of the edges then the wall must be in the way.
         for(var i = 0; i < lines.length; i++) {
             var intersect = Phaser.Line.intersects(ray, lines[i]);
             if (intersect) {
