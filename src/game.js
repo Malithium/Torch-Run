@@ -19,13 +19,13 @@ var game = new Phaser.Game(GAMEWIDTH, GAMEHEIGHT, Phaser.AUTO, 'Torch Run',{
 });
 
 function preload() {
-    setPlayerSprite('../assets/player.png');
-    setEnemySprite('../assets/enemy.png');
-    setWallSprite('../assets/wall.png');
-    setFuelSprite('../assets/fuel.png');
-    game.load.image('door_spr', '../assets/door.png')
-    game.load.text('level1', '../assets/levels/level1.json');
-    game.load.text('level2', '../assets/levels/level2.json');
+    setPlayerSprite('assets/player.png');
+    setEnemySprite('assets/enemy.png');
+    setWallSprite('assets/wall.png');
+    setFuelSprite('assets/fuel.png');
+    game.load.image('door_spr', 'assets/door.png')
+    game.load.text('level1', 'assets/levels/level1.json');
+    game.load.text('level2', 'assets/levels/level2.json');
 }
 
 function create(){
