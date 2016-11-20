@@ -7,12 +7,13 @@ var walls;
 var enemy;
 var fuel;
 var bitmap;
-var timer;
+
 var door;
 var lever;
 var level = 1;
 var playingBool = true;
-var torchPower = 100;
+var torchText;
+var torchPower;
 
 var playState = {
     create: function(){
@@ -20,25 +21,21 @@ var playState = {
         game.stage.backgroundColor = '#626A72';
         cursors = game.input.keyboard.createCursorKeys();
         levelLoader();
-
-        timer = game.time.create(false);
-        timer.loop(2000, lowerTorch, this);
-        timer.start();
-
     },
 
     update: function() {
         playerUpdate(player);
-
+        torchPower -= (2.0/24.0);
+        var decreaseTorch = Math.round(2.5 * torchPower);
         // Next, fill the entire light bitmap with a dark shadow color.
         bitmap.context.fillStyle = 'rgb(30, 30, 30)';
         bitmap.context.fillRect(0, 0, game.world.width, game.world.height);
-
+        torchText.setText("Torch Power : " + Math.round(torchPower) + "%");
         var points = [];
         for(var a = 0; a < Math.PI * 2; a += Math.PI/360) {
             // Create a ray from the light to a point on the circle
-            var ray = new Phaser.Line(player.x + player.width/2, player.y + player.height/2,
-                player.x + Math.cos(a) * 1000, player.y + Math.sin(a) * 1000);
+            var ray = new Phaser.Line(player.x + (player.width/2 - 0.5), player.y + (player.height/2 - 0.5),
+                player.x + Math.cos(a) * decreaseTorch, player.y + Math.sin(a) * decreaseTorch);
 
             // Check if the ray intersected any walls
             var intersect = getWallIntersection(ray);
@@ -50,19 +47,12 @@ var playState = {
                 points.push(ray.end);
             }
         }
-
         bitmap.context.beginPath();
-        if(torchPower > 75)
-            bitmap.context.fillStyle = 'rgb(255, 255, 255)';
-        else if(torchPower > 50)
-            bitmap.context.fillStyle = 'rgb(150, 150, 150)';
-        else if(torchPower > 25)
-            bitmap.context.fillStyle = 'rgb(100, 100, 100)';
-        else if(torchPower > 0)
-            bitmap.context.fillStyle = 'rgb(45, 45, 45)';
-        else {
+
+        bitmap.context.fillStyle = 'rgb('+decreaseTorch+','+decreaseTorch+','+decreaseTorch+')';
+
+        if(torchPower <= 0){
             bitmap.context.fillStyle = 'rgb(10, 10, 10)';
-            timer = null;
             game.world.removeAll();
             levelLoader();
         }
@@ -119,8 +109,11 @@ function levelLoader(){
 
     lightBitmap.blendMode = Phaser.blendModes.MULTIPLY;
     torchPower = 100;
-
-    console.log(walls);
+    torchText = game.add.text(game.world.centerX, 0, "Torch Power: " + Math.round(torchPower) + "%", {
+        font: "11px Arial",
+        fill: "#ff0044",
+        align: "center"
+    });
 }
 
 function nextLevel(){
@@ -163,8 +156,4 @@ function getWallIntersection(ray){
     }, this);
 
     return closestIntersection;
-}
-
-function lowerTorch(){
-    torchPower -= 5;
 }

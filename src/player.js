@@ -9,15 +9,10 @@ var player_y;
 function getPlayerSprite(p_x, p_y)
 {
     player = game.add.sprite(p_x, p_y, sprite_pl);
-    player.anchor.setTo(0, 0);
+    player.anchor.setTo(0.5, 0.5);
     player_x = p_x;
     player_y = p_y;
     game.physics.enable(player, Phaser.Physics.ARCADE);
-}
-
-function setPlayerSprite(spritePath)
-{
-    return
 }
 
 function playerUpdate(player) {
@@ -36,12 +31,16 @@ function playerUpdate(player) {
 }
 
 function enemyCollision(){
-    player.x = player_x;
-    player.y = player_y;
+    game.world.removeAll();
+    levelLoader();
 }
 
 function fuelCollision(player, fuel){
-    torchPower += 30;
+
+    if(torchPower + 30 > 100)
+        torchPower = 100;
+    else
+        torchPower += 30;
     fuel.kill();
 }
 
