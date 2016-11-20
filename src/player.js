@@ -17,7 +17,7 @@ function getPlayerSprite(p_x, p_y)
 
 function setPlayerSprite(spritePath)
 {
-    return game.load.image(sprite_pl, spritePath);
+    return
 }
 
 function playerUpdate(player) {
