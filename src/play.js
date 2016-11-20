@@ -137,6 +137,7 @@ function levelLoader() {
         fill: "#ff0044",
         align: "center"
     });
+}
 
     function nextLevel() {
         walls = [];
@@ -183,4 +184,3 @@ function levelLoader() {
 
         return closestIntersection;
     }
-}
