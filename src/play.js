@@ -24,6 +24,7 @@ var playState = {
 
         game.stage.backgroundColor = '#626A72';
         cursors = game.input.keyboard.createCursorKeys();
+        game.time.advancedTiming = true;
         levelLoader();
     },
 
@@ -86,6 +87,7 @@ var playState = {
 
     render: function(){
         //game.debug.body(circleRadius);
+        game.debug.text(game.time.fps || '--', 2, 14, "#00ff00");
     }
 };
 
@@ -176,7 +178,7 @@ function levelLoader() {
                             }
                         }
                     }
-                }
+               }
 
             }
 
