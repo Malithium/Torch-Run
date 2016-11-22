@@ -3,18 +3,8 @@
  */
 var sprite_fl = 'fuel_spr';
 
-function getFuelSprite(f_x, f_y)
-{
-    var fuel = game.add.sprite(f_x, f_y, sprite_fl);
-
-    fuel.anchor.setTo(0, 0);
-
-    game.physics.enable(fuel, Phaser.Physics.ARCADE);
-
-    return fuel;
-}
-
-function setFuelSprite(spritePath)
-{
-    return game.load.image(sprite_fl, spritePath);
+var Fuel = function(f_x, f_y, file){
+    this.sprite = game.add.sprite(f_x, f_y, sprite_fl);    
+    this.sprite.anchor.setTo(0, 0);
+    game.physics.enable(this.sprite, Phaser.Physics.ARCADE);
 }

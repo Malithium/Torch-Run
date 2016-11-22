@@ -4,101 +4,69 @@
     //set up Player sprite
 var player;
 var walls;
-var circleRadius;
 var enemy;
 var fuel;
-var bitmap;
+var waypoints = [];
 
 var door;
 var lever;
 var level = 1;
-var playingBool = true;
 
-var torchText;
-var torchPower;
-var decreaseTorch;
-
+var torch;
 
 var playState = {
     create: function(){
-
+        game.time.advancedTiming = true;
         game.stage.backgroundColor = '#626A72';
         cursors = game.input.keyboard.createCursorKeys();
-        game.time.advancedTiming = true;
         levelLoader();
     },
 
     update: function() {
-        playerUpdate(player);
-        torchPower -= (2.0/24.0);
+        player.update(cursors);
+        torch.update(player, walls);
 
-        var decreaseTorch = Math.round(2.5 * torchPower);
-        var outerShadow = Math.round(decreaseTorch/10);
-
-        // Next, fill the entire light bitmap with a dark shadow color.
-        bitmap.context.fillStyle = 'rgb('+outerShadow+','+outerShadow+','+outerShadow+')';
-        bitmap.context.fillRect(0, 0, game.world.width, game.world.height);
-        torchText.setText("Torch Power : " + Math.round(torchPower) + "%");
-
-        circleRadius.body.setCircle(decreaseTorch);
-
-        circleRadius.body.x = player.x  - decreaseTorch;
-        circleRadius.body.y = player.y  - decreaseTorch;
-        var points = [];
-        for(var a = 0; a < Math.PI * 2; a += Math.PI/360) {
-            // Create a ray from the light to a point on the circle
-           var ray = new Phaser.Line(player.x + (player.width/2 - 0.5), player.y + (player.height/2 - 0.5),
-                player.x + Math.cos(a) * decreaseTorch, player.y + Math.sin(a) * decreaseTorch);
-
-            // Check if the ray intersected any walls
-            var intersect = getWallIntersection(ray);
-
-            // Save the intersection or the end of the ray
-            if (intersect) {
-                points.push(intersect);
-            } else {
-                points.push(ray.end);
-            }
+        if(game.physics.arcade.overlap(torch.circleRadius, enemy.sprite, null, null)) {
+            var ray = new Phaser.Line(enemy.sprite.x + enemy.sprite.width / 2, enemy.sprite.y + enemy.height / 2, player.x + (player.width / 2 - 0.5), player.y + (player.height / 2 - 0.5));
+            var intercept = torch.getWallIntersection(ray, walls);
+            if (!intercept)
+                enemy.sprite.state = 2;
+            else
+               enemy.sprite.state = 1;
         }
-        bitmap.context.beginPath();
+        else
+            enemy.sprite.state = 1;
 
-        bitmap.context.fillStyle = 'rgb('+decreaseTorch+','+decreaseTorch+','+decreaseTorch+')';
+        enemy.update(waypoints, player.sprite, false);
 
-        if(torchPower <= 0){
-            bitmap.context.fillStyle = 'rgb(10, 10, 10)';
-            game.world.removeAll();
-            levelLoader();
-        }
-        bitmap.context.moveTo(points[0].x, points[0].y);
-        for(var i = 0; i < points.length; i++) {
-            bitmap.context.lineTo(points[i].x, points[i].y);
-        }
-        bitmap.context.closePath();
-        bitmap.context.fill();
-
-        // This just tells the engine it should update the texture cache
-        bitmap.dirty = true;
-        game.physics.arcade.collide(player, walls, null,null, this);
-        game.physics.arcade.collide(player, enemy, enemyCollision, null, this);
-        game.physics.arcade.overlap(player, fuel, fuelCollision, null, null);
-        game.physics.arcade.collide(player, door, doorCollision, null, null);
-        game.physics.arcade.overlap(player, lever, leverCollision, null, null);
+        game.physics.arcade.collide(player.sprite, walls, null,null, this);
+        game.physics.arcade.overlap(player.sprite, fuel, player.fuelCollision, null, null);
+        game.physics.arcade.overlap(player.sprite, lever, player.leverCollision, null, null);
+        game.physics.arcade.collide(player.sprite, door, player.doorCollision, null, null);
+        game.physics.arcade.collide(player.sprite, enemy.sprite, player.enemyCollision, null, this);
+        
     },
 
     render: function(){
-        //game.debug.body(circleRadius);
+        //game.debug.body(torch.circleRadius);
         game.debug.text(game.time.fps || '--', 2, 14, "#00ff00");
     }
 };
+
+
 
 function levelLoader() {
     var text = JSON.parse(game.cache.getText('level' + level));
     var wallData = text.wallData;
     var fuelData = text.fuelData;
+    var wayPointData = text.wayPointData;
+    
+    //game groups
     walls = game.add.group();
     fuel = game.add.group();
-    getPlayerSprite(text.playerStart.x, text.playerStart.y);
-    getEnemySprite(text.enemyStart.x, text.enemyStart.y);
+    
+    player = new Player(text.playerStart.x, text.playerStart.y, 'player_spr');
+    enemy = new Enemy(text.enemyStart.x, text.enemyStart.y, 'enemy_spr');
 
     if (text.doorPos.x > 0 && text.doorPos.y > 0) {
         door = game.add.sprite(text.doorPos.x, text.doorPos.y, 'door_spr');
@@ -106,39 +74,29 @@ function levelLoader() {
     }
     else {
         door.kill();
-    }
-
+    }    
+    
+    for(var w in wayPointData){
+        var wayPoint = game.add.sprite(wayPointData[w].x, wayPointData[w].y, 'placeHolder_spr');
+        wayPoint.id = wayPointData[w].id;
+        waypoints.push(wayPoint);
+        console.log("boom");
+    }    
+    
     lever = game.add.sprite(text.leverPos.x, text.leverPos.y, 'lever_spr');
     game.physics.enable(lever, Phaser.Physics.ARCADE);
     lever.body.immovable = true;
 
     for (var i in wallData) {
-        walls.add(getWallSprite(wallData[i].x, wallData[i].y, wallData[i].state));
-
+        walls.add(new Wall(wallData[i].x, wallData[i].y, wallData[i].state).sprite);
     }
+    
+    
     for (var f in fuelData) {
-        fuel.add(getFuelSprite(fuelData[f].x, fuelData[f].y))
+        fuel.add(new Fuel(fuelData[f].x, fuelData[f].y, 'fuel_spr').sprite)
     }
 
-    circleRadius = game.add.sprite(player.x - player.width / 2, player.y, 'placeHolder_spr');
-
-    game.physics.enable(circleRadius, Phaser.Physics.ARCADE);
-    circleRadius.anchor.setTo(0.5, 0.5);
-    circleRadius.body.setCircle(30);
-    circleRadius.body.x = circleRadius.x - circleRadius.width / 2;
-    circleRadius.body.y = circleRadius.y - circleRadius.height / 2;
-    bitmap = game.add.bitmapData(game.world.width, game.world.height);
-    bitmap.context.fillStyle = 'rgb(255, 255, 255)';
-    bitmap.context.strokeStyle = 'rgb(255, 255, 255)';
-    decreaseTorch = Math.round(2.5 * torchPower);
-    var lightBitmap = game.add.image(0, 0, bitmap);
-    lightBitmap.blendMode = Phaser.blendModes.MULTIPLY;
-    torchPower = 100;
-    torchText = game.add.text(game.world.centerX, 0, "Torch Power: " + Math.round(torchPower) + "%", {
-        font: "11px Arial",
-        fill: "#ff0044",
-        align: "center"
-    });
+    torch = new Torch(player);
 }
 
     function nextLevel() {
@@ -147,42 +105,4 @@ function levelLoader() {
         game.world.removeAll();
         level++
         levelLoader();
-    }
-
-    function getWallIntersection(ray) {
-        var distanceToWall = Number.POSITIVE_INFINITY;
-        var closestIntersection = null;
-
-        walls.forEach(function (wall) {
-            // Create an array of lines that represent the four edges of each wall
-            if (game.physics.arcade.overlap(circleRadius, wall, null, null, null)) {
-                if (wall.wallState == 0) {
-                    var lines = [
-                        new Phaser.Line(wall.x, wall.y, wall.x + wall.width, wall.y),
-                        new Phaser.Line(wall.x, wall.y, wall.x, wall.y + wall.height),
-                        new Phaser.Line(wall.x + wall.width, wall.y,
-                            wall.x + wall.width, wall.y + wall.height),
-                        new Phaser.Line(wall.x, wall.y + wall.height,
-                            wall.x + wall.width, wall.y + wall.height)
-                    ];
-
-                    for (var i = 0; i < lines.length; i++) {
-                        var intersect = Phaser.Line.intersects(ray, lines[i]);
-                        if (intersect) {
-                            // Find the closest intersection
-                            distance =
-                                this.game.math.distance(ray.start.x, ray.start.y, intersect.x, intersect.y);
-                            if (distance < distanceToWall) {
-                                distanceToWall = distance;
-                                closestIntersection = intersect;
-                            }
-                        }
-                    }
-               }
-
-            }
-
-        }, this);
-
-        return closestIntersection;
     }

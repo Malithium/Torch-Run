@@ -1,60 +1,51 @@
 /**
  * Created by Kyle Tuckey on 02/11/2016.
  */
-var sprite_pl = 'player_spr';
-var player_x;
-var player_y;
+var Player = function(p_x, p_y, file){
+    this.sprite = game.add.sprite(p_x, p_y, file);
+    this.sprite.anchor.setTo(0.5, 0.5);
+    game.physics.enable(this.sprite, Phaser.Physics.ARCADE);
 
-
-function getPlayerSprite(p_x, p_y)
-{
-    player = game.add.sprite(p_x, p_y, sprite_pl);
-    player.anchor.setTo(0.5, 0.5);
-    player_x = p_x;
-    player_y = p_y;
-    game.physics.enable(player, Phaser.Physics.ARCADE);
-}
-
-function playerUpdate(player) {
-
-    if(playingBool)
+    
+    this.update = function(cursors)
     {
         if(cursors.down.isDown)
-            player.body.y += 3;
+            this.sprite.body.y += 3;
         if(cursors.up.isDown)
-            player.body.y -= 3;
+            this.sprite.body.y -= 3;
         if(cursors.left.isDown)
-            player.body.x -= 3;
+            this.sprite.body.x -= 3;
         if(cursors.right.isDown)
-            player.body.x += 3;
+            this.sprite.body.x += 3;
+    }  
+    
+    this.fuelCollision = function(player, fuel)
+    {
+        if(torch.torchPower + 30 > 100)
+            torch.torchPower = 100;
+        else
+            torch.torchPower += 30;
+        fuel.kill();
     }
-}
-
-function enemyCollision(){
-    game.world.removeAll();
-    levelLoader();
-}
-
-function fuelCollision(player, fuel){
-
-    if(torchPower + 30 > 100)
-        torchPower = 100;
-    else
-        torchPower += 30;
-    fuel.kill();
-}
-
-function doorCollision(player, door){
-    nextLevel();
-}
-
-function leverCollision(player, lever){
-    lever.loadTexture('lever_spr2');
-    for(var set in walls.children){
-        if(walls.children[set].wallState > 0)
-        {
-            walls.children[set].kill();
+    
+    this.leverCollision = function(player, lever)
+    {
+        lever.loadTexture('lever_spr2');
+        for(var set in walls.children){
+            if(walls.children[set].wallState > 0)
+            {
+                walls.children[set].kill();
+            }
         }
     }
-
+    
+    this.enemyCollision = function(){
+        game.world.removeAll();
+        levelLoader();
+    }
+    
+    this.doorCollision = function(player, door)
+    {
+        nextLevel();
+    }
 }
