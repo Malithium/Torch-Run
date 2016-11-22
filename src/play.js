@@ -49,7 +49,7 @@ var playState = {
 
     render: function(){
         //game.debug.body(torch.circleRadius);
-        game.debug.text(game.time.fps || '--', 2, 14, "#00ff00");
+        //game.debug.text(game.time.fps || '--', 2, 14, "#00ff00");
     }
 };
 
@@ -102,6 +102,7 @@ function levelLoader() {
     function nextLevel() {
         walls = [];
         fuel = [];
+        waypoints = [];
         game.world.removeAll();
         level++
         levelLoader();

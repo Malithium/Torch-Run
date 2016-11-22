@@ -40,6 +40,7 @@ var Player = function(p_x, p_y, file){
     }
     
     this.enemyCollision = function(){
+        waypoints = [];
         game.world.removeAll();
         levelLoader();
     }
