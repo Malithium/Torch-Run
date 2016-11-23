@@ -62,9 +62,7 @@ var Torch = function(player)
         this.bitmap.context.fillStyle = 'rgb('+decreaseTorch+','+decreaseTorch+','+decreaseTorch+')';
 
         if(this.torchPower <= 0){
-            this.bitmap.context.fillStyle = 'rgb(10, 10, 10)';
-            game.world.removeAll();
-            levelLoader();
+            game.state.start('dead');
         }
         this.bitmap.context.moveTo(points[0].x, points[0].y);
         for(var i = 0; i < points.length; i++) {

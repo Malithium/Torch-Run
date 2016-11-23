@@ -4,6 +4,8 @@
 var Enemy = function(e_x, e_y, file, path) {
     this.sprite = game.add.sprite(e_x, e_y, file);
     this.sprite.anchor.setTo(0, 0);
+    this.sprite.animations.add('walk');
+    this.sprite.animations.play('walk', 3, true);
     game.physics.enable(this.sprite, Phaser.Physics.ARCADE);
     this.sprite.state = 0;
     this.sprite.path = path;

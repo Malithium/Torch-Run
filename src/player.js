@@ -40,9 +40,7 @@ var Player = function(p_x, p_y, file){
     }
     
     this.enemyCollision = function(){
-        waypoints = [];
-        game.world.removeAll();
-        levelLoader();
+        game.state.start('dead');
     }
     
     this.doorCollision = function(player, door)
