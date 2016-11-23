@@ -27,7 +27,7 @@ var playState = {
         torch.update(player, walls);
 
         if(game.physics.arcade.overlap(torch.circleRadius, enemy.sprite, null, null)) {
-            var ray = new Phaser.Line(enemy.sprite.x + enemy.sprite.width / 2, enemy.sprite.y + enemy.height / 2, player.x + (player.width / 2 - 0.5), player.y + (player.height / 2 - 0.5));
+            var ray = new Phaser.Line(enemy.sprite.x+enemy.sprite.width/2, enemy.sprite.y+enemy.sprite.height/2, player.sprite.x, player.sprite.y);
             var intercept = torch.getWallIntersection(ray, walls);
             if (!intercept)
                 enemy.sprite.state = 2;
