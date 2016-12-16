@@ -11,7 +11,7 @@ var Player = function(p_x, p_y, file){
     
     this.update = function()
     {
-        if(game.input.mousePointer.isDown)
+        if(game.input.pointer1.isDown || game.input.mousePointer.isDown)
         {
             game.physics.arcade.moveToPointer(this.sprite, 200);
 
