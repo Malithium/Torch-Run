@@ -15,13 +15,13 @@ var Torch = function(player)
     this.bitmap.context.fillStyle = 'rgb(255, 255, 255)';
     this.bitmap.context.strokeStyle = 'rgb(255, 255, 255)';
 
+
+    this.barBitmap = game.add.bitmapData(game.world.width, game.world.height);
+    this.barBitmapImage = game.add.image(0, 0, this.barBitmap);
+    this.barBitmapImage.visible = true;
+
     this.lightBitmap = game.add.image(0, 0, this.bitmap);
     this.lightBitmap.blendMode = Phaser.blendModes.MULTIPLY;
-    this.torchText = game.add.text(game.world.centerX, 0, "Torch Power: " + Math.round(this.torchPower) + "%", {
-        font: "11px Arial",
-        fill: "#ff0044",
-        align: "center"
-    });
 
     this.update = function(player, walls)
     {
@@ -34,7 +34,6 @@ var Torch = function(player)
         this.bitmap.context.fillStyle = 'rgb('+outerShadow+','+outerShadow+','+outerShadow+')';
         //bitmap.context.fillStyle = 'rgb(255,255,255)';
         this.bitmap.context.fillRect(0, 0, game.world.width, game.world.height);
-        this.torchText.setText("Torch Power : " + Math.round(this.torchPower) + "%");
 
         this.circleRadius.body.setCircle(decreaseTorch);
 
@@ -70,10 +69,8 @@ var Torch = function(player)
         }
         this.bitmap.context.closePath();
         this.bitmap.context.fill();
-
         // This just tells the engine it should update the texture cache
         this.bitmap.dirty = true;
-
     };
 
     this.getWallIntersection = function(ray, walls) {
