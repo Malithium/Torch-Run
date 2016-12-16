@@ -11,7 +11,7 @@ var enemys;
 var torch;
 var barSprite;
 var door;
-var level = 2;
+var level = 1;
 var sheetCount = 0;
 var currentPower = 100;
 var count = 0;
@@ -20,16 +20,12 @@ var playState = {
     create: function () {
         game.time.advancedTiming = true;
         game.stage.backgroundColor = '#626A72';
-
         levelLoader();
     },
 
     update: function () {
         player.update();
         torch.update(player, walls);
-
-
-
 
         if(Math.trunc(torch.torchPower) === currentPower-10)
         {
