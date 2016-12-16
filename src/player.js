@@ -11,7 +11,7 @@ var Player = function(p_x, p_y, file){
     
     this.update = function()
     {
-        if(game.input.pointer1.isDown || game.input.mousePointer.isDown)
+        if(game.input.onDown.add(this.itemTouched, this))
         {
             game.physics.arcade.moveToPointer(this.sprite, 200);
 
@@ -62,5 +62,10 @@ var Player = function(p_x, p_y, file){
     this.doorCollision = function(player, door)
     {
         nextLevel();
+    }
+
+    this.itemTouched = function(pointer)
+    {
+        return true;
     }
 }
